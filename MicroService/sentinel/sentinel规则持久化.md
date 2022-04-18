@@ -1,14 +1,6 @@
 # Sentinel 规则持久化
 
-
-
-
-
-
-
 ## 一、修改order-service服务
-
-
 
 修改OrderService，让其监听Nacos中的sentinel规则配置。
 
@@ -24,8 +16,6 @@
     <artifactId>sentinel-datasource-nacos</artifactId>
 </dependency>
 ```
-
-
 
 ### 2.配置nacos地址
 
@@ -44,15 +34,9 @@ spring:
             rule-type: flow # 还可以是：degrade、authority、param-flow
 ```
 
-
-
-
-
 ## 二、修改sentinel-dashboard源码
 
 SentinelDashboard默认不支持nacos的持久化，需要修改源码。
-
-
 
 ### 1. 解压
 
@@ -79,15 +63,11 @@ SentinelDashboard默认不支持nacos的持久化，需要修改源码。
 </dependency>
 ```
 
-
-
 ### 3. 添加nacos支持
 
 在sentinel-dashboard的test包下，已经编写了对nacos的支持，我们需要将其拷贝到main下。
 
 ![image-20210618201726280](assets/image-20210618201726280.png)
-
-
 
 ### 4. 修改nacos地址
 
@@ -105,8 +85,6 @@ SentinelDashboard默认不支持nacos的持久化，需要修改源码。
 nacos.addr=localhost:8848
 ```
 
-
-
 ### 5. 配置nacos数据源
 
 另外，还需要修改com.alibaba.csp.sentinel.dashboard.controller.v2包下的FlowControllerV2类：
@@ -116,8 +94,6 @@ nacos.addr=localhost:8848
 让我们添加的Nacos数据源生效：
 
 ![image-20210618202334536](assets/image-20210618202334536.png)
-
-
 
 ### 6. 修改前端页面
 
@@ -146,8 +122,6 @@ nacos.addr=localhost:8848
 运行IDEA中的maven插件，编译和打包修改好的Sentinel-Dashboard：
 
 ![image-20210618202701492](assets/image-20210618202701492.png)
-
-
 
 ### 8.启动
 
