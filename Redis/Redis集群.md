@@ -29,7 +29,7 @@ yum install -y gcc tcl
 解压缩：
 
 ```sh
-tar -xvf redis-6.2.4.tar.gz
+tar -xzf redis-6.2.4.tar.gz
 ```
 
 解压后：
@@ -57,6 +57,8 @@ make && make install
 ```properties
 # 绑定地址，默认是127.0.0.1，会导致只能在本地访问。修改为0.0.0.0则可以在任意IP访问
 bind 0.0.0.0
+# 保护模式，关闭保护模式
+protected-mode no
 # 数据库数量，设置为1
 databases 1
 ```
@@ -146,6 +148,7 @@ appendonly no
 cp redis-6.2.4/redis.conf 7001
 cp redis-6.2.4/redis.conf 7002
 cp redis-6.2.4/redis.conf 7003
+
 # 方式二：管道组合命令，一键拷贝
 echo 7001 7002 7003 | xargs -t -n 1 cp redis-6.2.4/redis.conf
 ```
