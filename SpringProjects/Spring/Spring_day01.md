@@ -996,7 +996,7 @@ public class AppForInstanceOrder {
 
 class:工厂类的类全名
 
-factory-mehod:具体工厂类中创建对象的方法名
+factory-method:具体工厂类中创建对象的方法名
 
 对应关系如下图:
 
