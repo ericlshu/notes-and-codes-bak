@@ -3261,7 +3261,7 @@ Pod是kubernetes的最小管理单元，在kubernetes中，按照pod的创建方
 
 ​    ReplicaSet的主要作用是**保证一定数量的pod正常运行**，它会持续监听这些Pod的运行状态，一旦Pod发生故障，就会重启或重建。同时它还支持对pod数量的扩缩容和镜像版本的升降级。
 
-![](D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200612005334159.png)
+![](assets/image-20200612005334159.png)
 
 ReplicaSet的资源清单文件：
 
@@ -3438,7 +3438,7 @@ replicaset.apps "pc-replicaset" deleted
 
 ​    为了更好的解决服务编排的问题，kubernetes在V1.2版本开始，引入了Deployment控制器。值得一提的是，这种控制器并不直接管理pod，而是通过管理ReplicaSet来简介管理Pod，即：Deployment管理ReplicaSet，ReplicaSet管理Pod。所以Deployment比ReplicaSet功能更加强大。
 
-![](D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200612005524778.png)
+![](assets/image-20200612005524778.png)
 
 Deployment主要功能有下面几个：
 
@@ -3677,7 +3677,7 @@ pc-deployment-c848d767-rrqcn    0/1     Terminating         0          34m
 
 滚动更新的过程：
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200416140251491.png" style="zoom:150%;border:1px solid" />
+<img src="assets/image-20200416140251491.png" style="zoom:150%;border:1px solid" />
 
 镜像更新中rs的变化:
 
@@ -3803,7 +3803,7 @@ deployment.apps "pc-deployment" deleted
 
 ​    HPA可以获取每个Pod利用率，然后和HPA中定义的指标进行对比，同时计算出需要伸缩的具体值，最后实现Pod的数量的调整。其实HPA与之前的Deployment一样，也属于一种Kubernetes资源对象，它通过追踪分析RC控制的所有目标Pod的负载变化情况，来确定是否需要针对性地调整目标Pod的副本数，这是HPA的实现原理。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200608155858271.png" style="border: 1px solid; zoom: 80%;"/>
+<img src="assets/image-20200608155858271.png" style="border: 1px solid; zoom: 80%;"/>
 
 接下来，我们来做一个实验
 
@@ -3827,7 +3827,7 @@ args:
 - --kubelet-preferred-address-types=InternalIP,Hostname,InternalDNS,ExternalDNS,ExternalIP
 ~~~
 
-![image-20200608163326496](D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200608163326496.png)
+![image-20200608163326496](assets/image-20200608163326496.png)
 
 ~~~powershell
 # 安装metrics-server
@@ -3991,7 +3991,7 @@ nginx-7df9756ccc-sl9c6   1/1     Terminating         0          6m50s
 
 ​    DaemonSet类型的控制器可以保证在集群中的每一台（或指定）节点上都运行一个副本。一般适用于日志收集、节点监控等场景。也就是说，如果一个Pod提供的功能是节点级别的（每个节点都需要且只需要一个），那么这类Pod就适合使用DaemonSet类型的控制器创建。
 
-![](D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200612010223537.png)
+![](assets/image-20200612010223537.png)
 
 DaemonSet控制器的特点：
 
@@ -4081,7 +4081,7 @@ Job，主要用于负责**批量处理(一次要处理指定数量任务)**短�
 - 当Job创建的pod执行成功结束时，Job将记录成功结束的pod数量
 - 当成功结束的pod达到指定的数量时，Job将完成执行
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200618213054113.png" style="zoom:80%;" />
+<img src="assets/image-20200618213054113.png" style="zoom:80%;" />
 
 Job的资源清单文件：
 
@@ -4202,7 +4202,7 @@ job.batch "pc-job" deleted
 
 ​    CronJob控制器以Job控制器资源为其管控对象，并借助它管理pod资源对象，Job控制器定义的作业任务在其控制器资源创建之后便会立即执行，但CronJob可以以类似于Linux操作系统的周期性任务作业计划的方式控制其运行**时间点**及**重复运行**的方式。也就是说，**CronJob可以在特定的时间点(反复的)去运行job任务**。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200618213149531.png" style="zoom:80%;" />
+<img src="assets/image-20200618213149531.png" style="zoom:80%;" />
 
 CronJob的资源清单文件：
 
@@ -4328,11 +4328,11 @@ cronjob.batch "pc-cronjob" deleted
 
 ​    为了解决这个问题，kubernetes提供了Service资源，Service会对提供同一个服务的多个pod进行聚合，并且提供一个统一的入口地址。通过访问Service的入口地址就能访问到后面的pod服务。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200408194716912.png" style="zoom:100%;border:1px solid" />
+<img src="assets/image-20200408194716912.png" style="zoom:100%;border:1px solid" />
 
 ​    Service在很多情况下只是一个概念，真正起作用的其实是kube-proxy服务进程，每个Node节点上都运行着一个kube-proxy服务进程。当创建Service的时候会通过api-server向etcd写入创建的service的信息，而kube-proxy会基于监听的机制发现这种Service的变动，然后**它会将最新的Service信息转换成对应的访问规则**。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200509121254425.png" style="border:1px solid" />
+<img src="assets/image-20200509121254425.png" style="border:1px solid" />
 
 ~~~powershell
 # 10.97.97.97:80 是service提供的访问入口
@@ -4356,20 +4356,20 @@ kube-proxy目前支持三种工作模式:
 ​    userspace模式下，kube-proxy会为每一个Service创建一个监听端口，发向Cluster IP的请求被Iptables规则重定向到kube-proxy监听的端口上，kube-proxy根据LB算法选择一个提供服务的Pod并和其建立链接，以将请求转发到Pod上。
 ​    该模式下，kube-proxy充当了一个四层负责均衡器的角色。由于kube-proxy运行在userspace中，在进行转发处理时会增加内核和用户空间之间的数据拷贝，虽然比较稳定，但是效率比较低。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200509151424280.png" style="border: 1px solid; zoom: 57%;" />
+<img src="assets/image-20200509151424280.png" style="border: 1px solid; zoom: 57%;" />
 
 **iptables 模式**
 
 ​    iptables模式下，kube-proxy为service后端的每个Pod创建对应的iptables规则，直接将发向Cluster IP的请求重定向到一个Pod IP。
 ​    该模式下kube-proxy不承担四层负责均衡器的角色，只负责创建iptables规则。该模式的优点是较userspace模式效率更高，但不能提供灵活的LB策略，当后端Pod不可用时也无法进行重试。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200509152947714.png" style="zoom: 57%;"  />
+<img src="assets/image-20200509152947714.png" style="zoom: 57%;"  />
 
 **ipvs 模式**
 
 ​    ipvs模式和iptables类似，kube-proxy监控Pod的变化并创建相应的ipvs规则。ipvs相对iptables转发效率更高。除此以外，ipvs支持更多的LB算法。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200509153731363.png" style="zoom: 57%" />
+<img src="assets/image-20200509153731363.png" style="zoom: 57%" />
 
 ~~~powershell
 # 此模式必须安装ipvs内核模块，否则会降级为iptables
@@ -4533,7 +4533,7 @@ TCP  10.97.97.97:80 rr
 
 ​    一个Service由一组Pod组成，这些Pod通过Endpoints暴露出来，**Endpoints是实现实际服务的端点集合**。换句话说，service和pod之间的联系是通过endpoints实现的。
 
-![image-20200509191917069](D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200509191917069.png)
+![image-20200509191917069](assets/image-20200509191917069.png)
 
 **负载分发策略**
 
@@ -4645,7 +4645,7 @@ service-headliness.dev.svc.cluster.local. 30 IN A 10.244.2.33
 
 ​    在之前的样例中，创建的Service的ip地址只有集群内部才可以访问，如果希望将Service暴露给集群外部使用，那么就要使用到另外一种类型的Service，称为NodePort类型。NodePort的工作原理其实就是**将service的端口映射到Node的一个端口上**，然后就可以通过`NodeIp:NodePort`来访问service了。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200620175731338.png" style="border:1px solid"  />
+<img src="assets/image-20200620175731338.png" style="border:1px solid"  />
 
 创建service-nodeport.yaml
 
@@ -4682,13 +4682,13 @@ service-nodeport   NodePort   10.105.64.191   <none>        80:30002/TCP  app=ng
 
 ​    LoadBalancer和NodePort很相似，目的都是向外部暴露一个端口，区别在于LoadBalancer会在集群的外部再来做一个负载均衡设备，而这个设备需要外部环境支持的，外部服务发送到这个设备上的请求，会被设备负载之后转发到集群中。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200510103945494.png" style="border:1px solid" />
+<img src="assets/image-20200510103945494.png" style="border:1px solid" />
 
 ### ExternalName类型的Service
 
 ​     ExternalName类型的Service用于引入集群外部的服务，它通过`externalName`属性指定外部一个服务的地址，然后在集群内部访问此service就可以访问到外部的服务了。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200510113311209.png" style="border:1px solid" />
+<img src="assets/image-20200510113311209.png" style="border:1px solid" />
 
 ~~~yaml
 apiVersion: v1
@@ -4723,7 +4723,7 @@ www.a.shifen.com.       30      IN      A       39.156.66.14
 
 ​    基于这种现状，kubernetes提供了Ingress资源对象，Ingress只需要一个NodePort或者一个LB就可以满足暴露多个Service的需求。工作机制大致如下图表示：
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200623092808049.png" style="border:1px solid"/>
+<img src="assets/image-20200623092808049.png" style="border:1px solid"/>
 
 ​    实际上，Ingress相当于一个7层的负载均衡器，是kubernetes对反向代理的一个抽象，它的工作原理类似于Nginx，可以理解成在**Ingress里建立诸多映射规则，Ingress Controller通过监听这些配置规则并转化成Nginx的反向代理配置 , 然后对外部提供服务**。在这里有两个核心概念：
 
@@ -4737,7 +4737,7 @@ Ingress（以Nginx为例）的工作原理如下：
 3. Ingress控制器会将生成的Nginx配置写入到一个运行着的Nginx服务中，并动态更新
 4. 到此为止，其实真正在工作的就是一个Nginx了，内部配置了用户定义的请求转发规则
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200516112704764.png" style="border: 1px solid; zoom: 100%;" />
+<img src="assets/image-20200516112704764.png" style="border: 1px solid; zoom: 100%;" />
 
 ## Ingress使用
 
@@ -4775,7 +4775,7 @@ ingress-nginx   NodePort   10.98.75.163   <none>        80:32240/TCP,443:31335/T
 
 为了后面的实验比较方便，创建如下图所示的模型
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200516102419998.png" style="zoom:80%;border:1px solid" />
+<img src="assets/image-20200516102419998.png" style="zoom:80%;border:1px solid" />
 
 创建tomcat-nginx.yaml
 
@@ -5016,7 +5016,7 @@ kubernetes的Volume支持多种类型，比较常见的有下面几个：
 
 ​    在一个Pod中准备两个容器nginx和busybox，然后声明一个Volume分别挂在到两个容器的目录中，然后nginx容器负责向Volume中写日志，busybox中通过命令将日志内容读到控制台。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200413174713773.png" style="zoom:80%;border:solid 1px" />
+<img src="assets/image-20200413174713773.png" style="zoom:80%;border:solid 1px" />
 
 创建一个volume-emptydir.yaml
 
@@ -5071,7 +5071,7 @@ volume-emptydir   2/2     Running   0          97s   10.244.1.100   node1  .....
 
 ​    HostPath就是将Node主机中一个实际目录挂在到Pod中，以供容器使用，这样的设计就可以保证Pod销毁了，但是数据依据可以存在于Node主机上。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200413214031331.png" style="zoom:100%;border:1px solid" />
+<img src="assets/image-20200413214031331.png" style="zoom:100%;border:1px solid" />
 
 创建一个volume-hostpath.yaml：
 
@@ -5141,7 +5141,7 @@ access.log  error.log
 
 ​    NFS是一个网络文件存储系统，可以搭建一台NFS服务器，然后将Pod中的存储直接连接到NFS系统上，这样的话，无论Pod在节点上怎么转移，只要Node跟NFS的对接没问题，数据就可以成功访问。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200413215133559.png" style="zoom:100%;border:1px solid" />
+<img src="assets/image-20200413215133559.png" style="zoom:100%;border:1px solid" />
 
 1）首先要准备nfs的服务器，这里为了简单，直接是master节点做nfs服务器
 
@@ -5225,7 +5225,7 @@ access.log  error.log
 
 ​    PVC（Persistent Volume Claim）是持久卷声明的意思，是用户对于存储需求的一种声明。换句话说，PVC其实就是用户向kubernetes系统发出的一种资源需求申请。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200514194111567.png" style="zoom:100%;border:1px solid" />
+<img src="assets/image-20200514194111567.png" style="zoom:100%;border:1px solid" />
 
 使用了PV和PVC之后，工作可以得到进一步的细分：
 
@@ -5593,7 +5593,7 @@ PVC和PV是一一对应的，PV和PVC之间的相互作用遵循以下生命周�
 
   对于PV，管理员可以设定回收策略，用于设置与之绑定的PVC释放资源之后如何处理遗留数据的问题。只有PV的存储空间完成回收，才能供新的PVC绑定和使用
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200515002806726.png" style="zoom:100%;border:1px solid" />
+<img src="assets/image-20200515002806726.png" style="zoom:100%;border:1px solid" />
 
 ## 配置存储
 
@@ -5788,7 +5788,7 @@ admin
 
 - **Service Account**：kubernetes管理的账号，用于为Pod中的服务进程在访问Kubernetes时提供身份标识。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200520102949189.png" style="zoom:100%;border:1px solid" />
+<img src="assets/image-20200520102949189.png" style="zoom:100%;border:1px solid" />
 
 **认证、授权与准入控制**   
 
@@ -5798,7 +5798,7 @@ ApiServer是访问及管理资源对象的唯一入口。任何一个请求访�
 - Authorization（授权）：  判断用户是否有权限对访问的资源执行特定的动作
 - Admission Control（准入控制）：用于补充授权机制以实现更加精细的访问控制功能。
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200520103942580.png" style="zoom:100%; border:1px solid" />
+<img src="assets/image-20200520103942580.png" style="zoom:100%; border:1px solid" />
 
 ## 认证管理
 
@@ -5822,7 +5822,7 @@ Kubernetes集群安全的最关键点在于如何识别并认证客户端身份�
       这种认证方式是安全性最高的一种方式，但是同时也是操作起来最麻烦的一种方式。
   ~~~
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200518211037434.png" style="zoom:100%;border:1px solid" />
+<img src="assets/image-20200518211037434.png" style="zoom:100%;border:1px solid" />
 
 **HTTPS认证大体分为3个过程：**
 
@@ -5880,7 +5880,7 @@ RBAC(Role-Based Access Control) 基于角色的访问控制，主要是在描述
 - 角色：代表着一组定义在资源上的可操作动作(权限)的集合
 - 绑定：将定义好的角色跟用户绑定在一起
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200519181209566.png" style="zoom:100%;border:1px solid" />
+<img src="assets/image-20200519181209566.png" style="zoom:100%;border:1px solid" />
 
 RBAC引入了4个顶级资源对象：
 
@@ -6197,11 +6197,11 @@ ca.crt:     1025 bytes
 
 在登录页面上输入上面的token
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200520144548997.png" alt="image-20200520144548997" style="zoom:80%;border:1px solid" />
+<img src="assets/image-20200520144548997.png" alt="image-20200520144548997" style="zoom:80%;border:1px solid" />
 
 出现下面的页面代表成功
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200520144959353.png" alt="image-20200520144959353" style="zoom:80%;border:1px solid" />
+<img src="assets/image-20200520144959353.png" alt="image-20200520144959353" style="zoom:80%;border:1px solid" />
 
 ## 使用DashBoard
 
@@ -6211,31 +6211,31 @@ ca.crt:     1025 bytes
 
 选择指定的命名空间`dev`，然后点击`Deployments`，查看dev空间下的所有deployment
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200520154628679.png" style="zoom:90%;border:1px solid" />
+<img src="assets/image-20200520154628679.png" style="zoom:90%;border:1px solid" />
 
 **扩缩容**
 
 在`Deployment`上点击`规模`，然后指定`目标副本数量`，点击确定
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200520162605102.png" style="zoom:90%;border:1px solid" />
+<img src="assets/image-20200520162605102.png" style="zoom:90%;border:1px solid" />
 
 **编辑**
 
 在`Deployment`上点击`编辑`，然后修改`yaml文件`，点击确定
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200520163253644.png" alt="image-20200520163253644" style="zoom:100%;border:1px solid" />
+<img src="assets/image-20200520163253644.png" alt="image-20200520163253644" style="zoom:100%;border:1px solid" />
 
 **查看Pod**
 
 点击`Pods`, 查看pods列表
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200520163552110.png" style="zoom:90%;border:1px solid" />
+<img src="assets/image-20200520163552110.png" style="zoom:90%;border:1px solid" />
 
 **操作Pod**
 
 选中某个Pod，可以对其执行日志（logs）、进入执行（exec）、编辑、删除操作
 
-<img src="D:/Sandbox/ericlshu/notes-and-codes/Kubernetes/assets/image-20200520163832827.png" style="zoom:90%;border:1px solid" />
+<img src="assets/image-20200520163832827.png" style="zoom:90%;border:1px solid" />
 
 > Dashboard提供了kubectl的绝大部分功能，这里不再一一演示
 
