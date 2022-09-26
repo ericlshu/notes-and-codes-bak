@@ -2298,3 +2298,167 @@ end
    * 这里又会涉及到跨域，不过 9527 与 8080 直接存在信任关系，设置一下就好
 
 6. 9527 再走之前的逻辑就可以了，在 router 的 beforeEach 方法里，用 8080 token 换用户信息
+
+
+
+### 增删改查
+
+首先，在 api 里添加与后端交互的代码：`src/api/student.js`
+
+```js
+import axios from '@/utils/request'
+
+export function all() {
+  return axios({
+    url: '/students',
+    method: 'get'
+  })
+}
+
+export function deleteById(id) {
+  return axios({
+    url: `/students/${id}`,
+    method: 'delete'
+  })
+}
+
+export function update(id, dto) {
+  return axios({
+    url: `/students/${id}`,
+    method: 'put',
+    data: dto
+  })
+}
+
+export function insert(dto) {
+  return axios({
+    url: `/students`,
+    method: 'post',
+    data: dto
+  })
+}
+```
+
+然后，添加新的路由：`src/router/index.js`
+
+```js
+export const asyncRoutes = [
+  // ...
+  {
+    path: '/student',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/student/index'),
+        meta: { title: '学生管理', icon: 'el-icon-s-help', roles: ['admin'] }
+      }
+    ]
+  },
+  // ...
+]
+```
+
+* 注意 title 这里没有考虑国际化
+
+最后，添加新的视图界面：`src/views/student/index.vue`
+
+```vue
+<template>
+  <div>
+    <el-table :data="students">
+      <el-table-column label="编号" prop="id"></el-table-column>
+      <el-table-column label="姓名" prop="name"></el-table-column>
+      <el-table-column label="性别" prop="sex"></el-table-column>
+      <el-table-column label="年龄" prop="age"></el-table-column>
+      <el-table-column fixed="right" label="操作" width="100">
+        <template slot-scope="scope">
+          <el-button @click="handleUpdate(scope.row)" type="text" size="small">修改</el-button>
+          <el-button @click="handleDelete(scope.row)" type="text" size="small">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-dialog width="22%" :visible.sync="updateDialogVisible">
+      <el-form :model="updateForm">
+        <el-form-item label="编号">
+          <el-input size="mini" :readonly="true" v-model="updateForm.id"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名">
+          <el-input size="mini" v-model="updateForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="性别">
+          <el-select size="mini" v-model="updateForm.sex">
+            <el-option value="男"></el-option>
+            <el-option value="女"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="年龄">
+          <el-input size="mini" v-model="updateForm.age"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" size="mini" @click="confirmUpdate()">确定</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+  </div>
+</template>
+<script>
+import { all, deleteById, update, insert } from '@/api/student'
+const options = {
+  mounted() {
+    this.all()
+  },
+  data() {
+    return {
+      students: [],
+      updateDialogVisible: false,
+      updateForm: {
+        id: 0,
+        name: '',
+        sex: '男',
+        age: 0
+      }
+    }
+  },
+  methods: {
+    async confirmUpdate() {
+      await update(this.updateForm.id, this.updateForm)
+      this.updateDialogVisible = false
+      this.all()
+    },
+    handleUpdate(row) { // {id, name, sex, age}
+      this.updateDialogVisible = true
+      this.updateForm = { ...row }
+      // this.updateForm = row // 错误写法，不能让他俩指向同一个对象
+    },
+    async handleDelete(row) {
+      try {
+        await this.$confirm('此操作将永久删除该学生, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        await deleteById(row.id)
+        this.all()
+      } catch (e) {
+        console.log('取消删除')
+      }
+    },
+    async all() {
+      const { data } = await all()
+      this.students = data
+    }
+  }
+}
+export default options
+</script>
+<style scoped>
+.el-input,
+.el-select {
+  width: 180px;
+}
+</style>
+```
+
+* 其中 handleUpdate 和 handleDelete 接收的参数，都是代表了当前行的学生对象
