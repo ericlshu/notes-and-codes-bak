@@ -21,6 +21,14 @@ class Draw {
     const code = options.code ?? ''
     const keyframe = options.keyframe ?? false
     const cloned = options.cloned ?? {}
+    const curr = options.curr ?? '' // 用在非递归遍历二叉树
+    const left = options.left ?? '' // 用在非递归遍历二叉树
+    const right = options.right ?? '' // 用在非递归遍历二叉树
+    const pop = options.pop ?? '' // 用在非递归遍历二叉树
+    const ancestorFromLeft = options.ancestorFromLeft ?? '' // 用在二叉搜索树
+    const ancestorFromRight = options.ancestorFromRight ?? '' // 用在二叉搜索树
+    const gap = options.gap ?? 1 // 用在希尔排序
+    const sorts = options.sorts ?? [] // 用在快排，表示已排序索引集合
     this.frames.push(() =>
       frame({
         array,
@@ -34,6 +42,14 @@ class Draw {
         node,
         code,
         cloned,
+        curr,
+        left,
+        right,
+        pop,
+        ancestorFromLeft,
+        ancestorFromRight,
+        gap,
+        sorts
       })
     )
     this.keyframes.push(keyframe)
@@ -147,6 +163,12 @@ function minAndMax(array) {
 function calculateRectHeight(array, minHeight, maxHeight) {
   const [min, max] = minAndMax(array)
   const map = new Map()
+  if(min == max) {
+    for (let i = 0; i < array.length; i++) {
+      map.set(array[i], minHeight)
+    }
+    return map
+  }
   for (let i = 0; i < array.length; i++) {
     map.set(
       array[i],
@@ -235,9 +257,11 @@ class Pointers {
 
     for (const p of this.pointers) {
       if (currentIndex === p.index) {
+        stroke('black')
         fill(255)
         circle(x, height - p.height, Pointers.WIDTH)
         fill(0)
+        noStroke()
         text(p.text, x, height - p.height + 4)
       }
     }
