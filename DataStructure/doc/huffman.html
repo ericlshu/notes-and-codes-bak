@@ -60,9 +60,14 @@
     <div style='background-color:#ccc; margin: 2px 2px 0 0; padding: 4px 6px;'>未访问</div>
   </section>
   <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
-    <span>数组表示的二叉树&nbsp;</span><input type="text" id='str' class="saveable" value="abbccccccc">
+    <span>原始串&nbsp;</span><input type="text" id='str' class="saveable" value="abbccccccc">
     <span>n&nbsp;</span><input type="text" id='n' class="saveable" value="4">
-    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable">
+  </div>
+  <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
+    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable int"
+      style="width: 40px;">
+    <span>直径</span><input type="number" step="1" value="30" id="DIAMETER" class="saveable int" style="width: 40px;">
+    <span>矩形宽</span><input type="number" step="1" value="180" id="RECT_WIDTH" class="saveable int" style="width: 40px;">
     <input style='font-size:12px;' type="button" value="保存" onclick="onSave('huffman')">
   </div>
   <script src="js/p5.js"></script>
@@ -75,9 +80,6 @@
     const postDiv = document.getElementById("postDiv")
     const resultSpans = document.querySelectorAll(".result")
     const result = []
-    const colorMap = new Map()
-    const colorArray = ['#1abc9c', '#e67e22', '#3498db', '#f1c40f', '#9b59b6', '#e74c3c']
-    let colorIndex = 0
     const options = loadOptionsFromStorage('huffman')
     let str = options.str
     let map = new Map()
@@ -94,15 +96,13 @@
       data.push({ ch: k, freq: v })
     })
     let heap;
-    const DIAMETER = 30                   // 直径 diameter
-    const WIDTH = DIAMETER * 6
+    const DIAMETER = options.DIAMETER
+    const WIDTH = options.RECT_WIDTH
     const TOP = DIAMETER
     const n = options.n
     const d = new Draw(options.animate_speed)
     let root
-    function preload() {
-      // const font = loadFont('JetBrainsMono-Regular.ttf')
-    }
+
     function setup() {
       const WIN_WIDTH = document.querySelector('main').clientWidth
       const WIN_HEIGHT = document.querySelector('main').clientHeight
@@ -132,9 +132,6 @@
           let y = TOP
           stroke('black')
           rect(x, y, WIDTH, DIAMETER)
-          // noStroke()
-          // fill('#ffffff')
-          // text(array[i].ch, x + WIDTH / 2, y - 6)
           drawTree(array[i], x + WIDTH / 2, y + DIAMETER / 2, n - 1, 0, 0)
         }
       }
@@ -232,8 +229,8 @@
       }
       d.add({ cloned: clone({ array: heap.data }) }, frame)
       const root = heap.poll()
-      console.log(traversal(root, []))
-      console.log(root)
+      // console.log(traversal(root, []))
+      // console.log(root)
     }
 
     function traversal(node, code) {
@@ -249,10 +246,6 @@
       }
       code.pop()
       return sum
-    }
-
-    function clone(tree) {
-      return JSON.parse(JSON.stringify(tree))
     }
 
   </script>

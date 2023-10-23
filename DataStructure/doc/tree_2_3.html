@@ -61,11 +61,9 @@
   </section>
   <main></main>
   <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
-    <span>要插入的数据&nbsp;</span><input type="text" id='data' class="saveable" value="1,2,3,4">
+    <span>要插入的数据&nbsp;</span><input type="text" id='data' class="saveable array" value="1,2,3,4">
     <input style='font-size:12px;' type="button" value="put" onclick="doPut2()">
-    <span>n&nbsp;</span><input type="text" id='n' class="saveable" value="5">
-    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable">
-    <input style='font-size:12px;' type="button" value="保存" onclick="onSave('tree_23')">
+    <span>n&nbsp;</span><input type="text" id='n' class="saveable" value="6">
   </div>
   <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
     <span>待插入 key</span><input type="text" id='inserted' class="saveable" value="11">
@@ -75,23 +73,25 @@
     <span>待删除 key</span><input type="text" id='deleted' class="saveable" value="4">
     <input style='font-size:12px;' type="button" value="delete" onclick="doDelete()">
   </div>
+  <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
+    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable int"
+      style="width: 40px;">
+    <span>宽度</span><input type="number" step="1" value="40" id="WIDTH" class="saveable int" style="width: 40px;">
+    <span>高度</span><input type="number" step="1" value="25" id="HEIGHT" class="saveable int" style="width: 40px;">
+    <input style='font-size:12px;' type="button" value="保存" onclick="onSave('tree_23')">
+  </div>
   <script src="js/p5.js"></script>
   <script src="js/p5-svg.js"></script>
   <script src="js/util.js"></script>
   <script src="js/prism.js"></script>
   <script>
-    const colorMap = new Map()
-    const colorArray = ['#1abc9c', '#e67e22', '#3498db', '#f1c40f', '#9b59b6', '#e74c3c']
-    let colorIndex = 0
     const options = loadOptionsFromStorage('tree_23')
-    let data = options.data.split(',').map(e => Number(e))
-    const WIDTH = 40
-    const HEIGHT = 25
+    let data = options.data
+    const WIDTH = options.WIDTH
+    const HEIGHT = options.HEIGHT
     const n = options.n
     const d = new Draw(options.animate_speed)
-    function preload() {
-      // const font = loadFont('JetBrainsMono-Regular.ttf')
-    }
+
     function setup() {
       const WIN_WIDTH = document.querySelector('main').clientWidth
       const WIN_HEIGHT = document.querySelector('main').clientHeight
@@ -99,7 +99,6 @@
       createCanvas(WIN_WIDTH, WIN_HEIGHT, SVG)
       textSize(FONT_SIZE)
       textAlign(CENTER)
-      noStroke()
       all.push(tree.root)
       d.add({ cloned: clone(all) }, frame)
       for (let i = 0; i < 0; i++) {
@@ -122,9 +121,8 @@
       if (node) {
         // console.log(node)
         if (px && py) {
-          stroke('black')
+          stroke(0)
           line(x, y, px, py)
-          noStroke()
         }
         const half = Math.floor(node.children.length / 2)
         const step = Math.pow(2, deep) * WIDTH / 8 - 47
@@ -167,14 +165,15 @@
           // console.log('default')
         }
 
-
-        const keys = node.keys.map((e,i)=>{return e+''+subs[i]}).join(' ')
+        stroke(0)
+        const keys = node.keys.map((e, i) => { return e + '' + subs[i] }).join(' ')
         let color = "black"
         fill(color)
         const wi = WIDTH + keys.length * 2
         rect(x - wi / 2, y - HEIGHT / 2, wi, HEIGHT)
         fill('red')
         rect(x - wi / 2, y + HEIGHT / 2, wi, HEIGHT / 2)
+        noStroke()
         fill('white')
         text(keys, x, y + 4)
         fill('white')
@@ -294,10 +293,6 @@
     }
     const tree = new Tree(2)
     const all = []
-
-    function clone(tree) {
-      return JSON.parse(JSON.stringify(tree))
-    }
 
   </script>
 </body>

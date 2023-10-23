@@ -43,7 +43,7 @@
 
 <body>
   <section class="frames"></section>
-  <div class="code">
+  <div class="code" style="display: none;">
     <pre><code class="language-java">int[][] a = new int[10][14];
 for (int j = 0; j < 14; j++) {
   for (int i = 0; i < 10; i++) {
@@ -59,8 +59,13 @@ for (int j = 0; j < 14; j++) {
     <div style='background-color:#f08d49; margin: 2px 2px 0 0; padding: 4px 6px;'>命中</div>
   </section>
   <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
-    <span>循环次数&nbsp;</span><input type="text" id='count' class="saveable" value="10">
-    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable">
+    <span>循环次数&nbsp;</span><input type="text" id='count' class="saveable int" value="10">
+  </div>
+  <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
+    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable int"
+      style="width: 40px;">
+    <span>矩形宽</span><input type="number" step="1" value="30" id="RECT_WIDTH" class="saveable int" style="width: 40px;">
+    <span>矩形高</span><input type="number" step="1" value="20" id="RECT_HEIGHT" class="saveable int" style="width: 40px;">
     <input style='font-size:12px;' type="button" value="保存" onclick="onSave('cache_line1')">
   </div>
   <script src="js/p5.js"></script>
@@ -69,17 +74,10 @@ for (int j = 0; j < 14; j++) {
   <script src="js/prism.js"></script>
   <script>
     const options = loadOptionsFromStorage('cache_line1')
-    const RECT_WIDTH = 30                 // 矩形宽度、圆直径
-    const SPACING = 1                     // 间隙
-    const INDEX_RECT_HEIGHT = 20          // 索引矩形高度
-    const POINTER_HEIGHT = 150            // 指针高度, 从底部算
-    const RECT_HEIGHT = 20                // 矩形高度
     const count = options.count
     const d = new Draw(options.animate_speed)
     const cache = new Cache()
-    function preload() {
-      // const font = loadFont('JetBrainsMono-Regular.ttf')
-    }
+
     function setup() {
       const WIN_WIDTH = document.querySelector('main').clientWidth
       const WIN_HEIGHT = document.querySelector('main').clientHeight
@@ -96,7 +94,7 @@ for (int j = 0; j < 14; j++) {
       d.updateFrameButtons()
     }
     function draw() {
-      d.draw(() => background('#2d2d2d'))
+      d.draw(() => background('#eee'))
     }
     function frame({ cache, lineNumber, highlights }) {
       const pre = document.querySelector('pre')

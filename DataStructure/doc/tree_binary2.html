@@ -60,13 +60,17 @@
     <div style='background-color:#ccc; margin: 2px 2px 0 0; padding: 4px 6px;'>未访问</div>
   </section>
   <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
-    <span>数组表示的二叉树&nbsp;</span><input type="text" id='data' class="saveable" value="1,2,3,4,n,5,6">
+    <span>数组表示的二叉树&nbsp;</span><input type="text" id='data' class="saveable narray" value="1,2,3,4,n,5,6">
     <span>n&nbsp;</span><input type="text" id='n' class="saveable" value="5">
-    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable">
-    <input style='font-size:12px;' type="button" value="保存" onclick="onSave('tree_binary2')">
     <input style='font-size:12px;' type="button" value="前序" onclick="p1()">
     <input style='font-size:12px;' type="button" value="中序" onclick="p2()">
     <input style='font-size:12px;' type="button" value="后序" onclick="p3()">
+  </div>
+  <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
+    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable int"
+      style="width: 40px;">
+    <span>直径</span><input type="number" step="1" value="50" id="DIAMETER" class="saveable int" style="width: 40px;">
+    <input style='font-size:12px;' type="button" value="保存" onclick="onSave('tree_binary2')">
   </div>
   <div id="preDiv"
     style="display: none; padding: 10px 30px 10px 10px; background-color: bisque; position: absolute; top: 100px; right: 0;">
@@ -138,26 +142,16 @@
       inDiv.style.display = "none"
       postDiv.style.display = "block"
     }
-    const colorMap = new Map()
-    const colorArray = ['#1abc9c', '#e67e22', '#3498db', '#f1c40f', '#9b59b6', '#e74c3c']
-    let colorIndex = 0
     const options = loadOptionsFromStorage('tree_binary2')
-    let data = options.data.split(',').map(e => {
-      if (e === 'null' || e === 'n') {
-        return null
-      } else {
-        return e;
-      }
-    })
-    const DIAMETER = 25                   // 直径 diameter
+    let data = options.data
+    console.log(data)
+    const DIAMETER = options.DIAMETER
     const LEFT_PAD = 20
     const TOP_PAD = 200
     const n = options.n
     const d = new Draw(options.animate_speed)
     let root
-    function preload() {
-      // const font = loadFont('JetBrainsMono-Regular.ttf')
-    }
+
     function setup() {
       const WIN_WIDTH = document.querySelector('main').clientWidth
       const WIN_HEIGHT = document.querySelector('main').clientHeight
@@ -165,12 +159,11 @@
       createCanvas(WIN_WIDTH, WIN_HEIGHT, SVG)
       textSize(FONT_SIZE)
       textAlign(CENTER)
-      noStroke()
       root = binary_tree(data, n)
       d.updateFrameButtons()
     }
     function draw() {
-      d.draw(() => background('#2d2d2d'))
+      d.draw(() => background('#eee'))
     }
     // curr 当前节点, left 处理谁的左孩子, right 处理谁的右孩子
     function frame({ cloned, array, curr, left, right, pop }) {
@@ -178,10 +171,11 @@
       if (array) {
         let x = width / 2 - DIAMETER / 2, y = height - DIAMETER
         for (let i = 0; i < array.length; i++) {
-          noStroke()
+          stroke(0)
           fill('#67cdcc')
           rect(x, y, DIAMETER, DIAMETER)
           fill('#ffffff')
+          noStroke()
           text(array[i], x + DIAMETER / 2, y + DIAMETER / 2 + 4)
           y -= DIAMETER
         }
@@ -192,9 +186,8 @@
       if (node) {
         if (node.txt) {
           if (px && py) {
-            stroke('white')
+            stroke('black')
             line(x, y, px, py)
-            noStroke()
           }
         }
         drawTree(node.left, x - Math.pow(2, deep) * DIAMETER / 4, y + Math.pow(2, n - deep) * DIAMETER / 2, deep - 1, x, y, curr, left, right, pop)
@@ -314,7 +307,7 @@
     }
 
     function clearStatus(node) {
-      if(!node) {
+      if (!node) {
         return
       }
       node.status = 0

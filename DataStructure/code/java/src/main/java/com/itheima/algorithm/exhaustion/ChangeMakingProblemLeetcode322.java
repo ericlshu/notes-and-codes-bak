@@ -40,10 +40,10 @@ public class ChangeMakingProblemLeetcode322 {
 
     public static void main(String[] args) {
         ChangeMakingProblemLeetcode322 leetcode = new ChangeMakingProblemLeetcode322();
-//        int count = leetcode.coinChange(new int[]{5, 2, 1}, 5);
+        int count = leetcode.coinChange(new int[]{5, 2, 1}, 5);
 //        int count = leetcode.coinChange(new int[]{25, 10, 5, 1}, 41);
 //        int count = leetcode.coinChange(new int[]{2}, 3);
-        int count = leetcode.coinChange(new int[]{15, 10, 1}, 21);
+//        int count = leetcode.coinChange(new int[]{15, 10, 1}, 21);
         System.out.println(count);
     }
 }

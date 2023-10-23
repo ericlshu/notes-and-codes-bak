@@ -101,7 +101,14 @@ public void remove(int index) {
       <span>待删除索引&nbsp;</span><input type="text" id='removeIndex' style="width:20px;" value="2" class="saveable">
       <input style='font-size:12px;' type="button" value="remove()" onclick="onRemove()">
     </div>
-    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable">
+  </div>
+  <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
+    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable int"
+      style="width: 40px;">
+    <span>矩形宽</span><input type="number" step="1" value="30" id="RECT_WIDTH" class="saveable int" style="width: 40px;">
+    <span>矩形高</span><input type="number" step="1" value="20" id="RECT_HEIGHT" class="saveable int" style="width: 40px;">
+    <span>prev宽</span><input type="number" step="1" value="10" id="PREV_WIDTH" class="saveable int" style="width: 40px;">
+    <span>next宽</span><input type="number" step="1" value="10" id="NEXT_WIDTH" class="saveable int" style="width: 40px;">
     <input style='font-size:12px;' type="button" value="保存" onclick="onSave('ds_doubly_linked_list(sentinal)')">
   </div>
   <script src="js/p5.js"></script>
@@ -226,18 +233,13 @@ public void remove(int index) {
     }
     
     const options = loadOptionsFromStorage('ds_doubly_linked_list(sentinal)')
-    const RECT_WIDTH = 30                 // 矩形宽度、圆直径
-    const RECT_HEIGHT = 20                // 值矩形高度
-    const SPACING = 1                     // 间隙
-    const INDEX_RECT_HEIGHT = 20          // 索引矩形高度
-    const POINTER_HEIGHT = 150            // 指针高度, 从底部算
-    const PREV_WIDTH = 10                 // prev 宽度
-    const NEXT_WIDTH = 10                 // next 宽度
     const d = new Draw(options.animate_speed)
+    const RECT_WIDTH = options.RECT_WIDTH
+    const RECT_HEIGHT = options.RECT_HEIGHT
+    const PREV_WIDTH = options.PREV_WIDTH
+    const NEXT_WIDTH = options.NEXT_WIDTH
     const list = new LinkedNode()
-    function preload() {
-      // const font = loadFont('JetBrainsMono-Regular.ttf')
-    }
+
     function setup() {
       const WIN_WIDTH = document.querySelector('main').clientWidth
       const WIN_HEIGHT = document.querySelector('main').clientHeight
@@ -249,7 +251,7 @@ public void remove(int index) {
       d.updateFrameButtons()
     }
     function draw() {
-      d.draw(() => background('#2d2d2d'))
+      d.draw(() => background('#eee'))
     }
     /*
       node: 新增节点
@@ -260,12 +262,12 @@ public void remove(int index) {
         pre.setAttribute('data-line', lineNumber)
         Prism.highlightAllUnder(pre)
       }
-      const UNIT = SPACING + PREV_WIDTH + RECT_WIDTH + NEXT_WIDTH + RECT_WIDTH
+      const UNIT = PREV_WIDTH + RECT_WIDTH + NEXT_WIDTH + RECT_WIDTH
       const BASE = UNIT + UNIT / 2
-      const LEFT = UNIT / 2 + SPACING
+      const LEFT = UNIT / 2
 
       const [nValue, nPrev, nNext, nIndex] = [...node]
-      const N_HEIGHT = height - SPACING - 80
+      const N_HEIGHT = height - 80
 
       noStroke()
 
@@ -284,22 +286,22 @@ public void remove(int index) {
 
       for (let curr = data.head; curr != null; curr = curr.next, i++, idx++) {
         let x = LEFT + i * UNIT
-        let y = height - SPACING
+        let y = height
 
         if (nIndex >= 0 && nIndex == i) {
-          arrow1(prevArrowX, prevArrowY, x + PREV_WIDTH + RECT_WIDTH / 2, y - RECT_HEIGHT, 'white')
-          arrow1(nextArrowX, nextArrowY, x + UNIT + PREV_WIDTH + RECT_WIDTH / 2, y - RECT_HEIGHT, 'white')
+          arrow1(prevArrowX, prevArrowY, x + PREV_WIDTH + RECT_WIDTH / 2, y - RECT_HEIGHT, 'black')
+          arrow1(nextArrowX, nextArrowY, x + UNIT + PREV_WIDTH + RECT_WIDTH / 2, y - RECT_HEIGHT, 'black')
         }
 
         if (nNext === idx) {
-          arrow1(x + PREV_WIDTH / 2, y - RECT_HEIGHT, newX + 1, newY, 'white') // prev 左上
+          arrow1(x + PREV_WIDTH / 2, y - RECT_HEIGHT, newX + 1, newY, 'black') // prev 左上
         } else {
-          arrow2(x, y - RECT_HEIGHT / 2 - RECT_HEIGHT / 4, PREV_WIDTH + RECT_WIDTH, PI, 'white')  // prev 左
+          arrow2(x, y - RECT_HEIGHT / 2 - RECT_HEIGHT / 4, PREV_WIDTH + RECT_WIDTH, PI, 'black')  // prev 左
         }
         if (nPrev === idx) {
-          arrow1(x + PREV_WIDTH + RECT_WIDTH + NEXT_WIDTH / 2, y - RECT_HEIGHT / 2, newX - 1, newY, 'white') // next 右上
+          arrow1(x + PREV_WIDTH + RECT_WIDTH + NEXT_WIDTH / 2, y - RECT_HEIGHT / 2, newX - 1, newY, 'black') // next 右上
         } else {
-          arrow2(x + PREV_WIDTH + RECT_WIDTH + NEXT_WIDTH, y - RECT_HEIGHT / 2 + RECT_HEIGHT / 4, RECT_WIDTH + NEXT_WIDTH, 0, 'white') // next 右
+          arrow2(x + PREV_WIDTH + RECT_WIDTH + NEXT_WIDTH, y - RECT_HEIGHT / 2 + RECT_HEIGHT / 4, RECT_WIDTH + NEXT_WIDTH, 0, 'black') // next 右
 
         }
         drawRect(x, y, curr.value, highlights.includes(idx))

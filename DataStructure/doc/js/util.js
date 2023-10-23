@@ -29,6 +29,7 @@ class Draw {
     const ancestorFromRight = options.ancestorFromRight ?? '' // 用在二叉搜索树
     const gap = options.gap ?? 1 // 用在希尔排序
     const sorts = options.sorts ?? [] // 用在快排，表示已排序索引集合
+    const highlightVisited = options.highlightVisited ?? -1 // 用在非重复全排列
     this.frames.push(() =>
       frame({
         array,
@@ -49,15 +50,16 @@ class Draw {
         ancestorFromLeft,
         ancestorFromRight,
         gap,
-        sorts
+        sorts,
+        highlightVisited,
       })
     )
     this.keyframes.push(keyframe)
   }
 
   // 绘制当前帧
-  draw(beforeDraw) {
-    if (this.idx != this.lastIdx) {
+  draw(beforeDraw, force) {
+    if ((force && force()) || this.idx != this.lastIdx) {
       beforeDraw && beforeDraw()
       this.frames[this.idx]()
       this.lastIdx = this.idx
@@ -163,7 +165,7 @@ function minAndMax(array) {
 function calculateRectHeight(array, minHeight, maxHeight) {
   const [min, max] = minAndMax(array)
   const map = new Map()
-  if(min == max) {
+  if (min == max) {
     for (let i = 0; i < array.length; i++) {
       map.set(array[i], minHeight)
     }
@@ -198,7 +200,7 @@ class Pointers {
           results[i]++
         }
       }
-    }    
+    }
     for (let i = 0; i < this.pointers.length; i++) {
       this.pointers[i].width = results[i] * Pointers.WIDTH
     }
@@ -327,6 +329,19 @@ function loadOptionsFromDom() {
     const e = elements[i]
     if (e.id) {
       options[e.id] = e.value
+      if (e.classList.contains('int')) {
+        options[e.id] = Number(e.value)
+      } else if (e.classList.contains('array')) {
+        options[e.id] = e.value.split(',').map((e) => Number(e))
+      } else if (e.classList.contains('narray')) {
+        options[e.id] = e.value.split(',').map((e) => {
+          if (e === 'null' || e === 'n') {
+            return null
+          } else {
+            return e
+          }
+        })
+      }
       if (e.type == 'checkbox' && e.classList.contains('bool')) {
         options[e.id] = e.checked ?? false
       }
@@ -348,6 +363,11 @@ function loadOptionsFromStorage(name) {
       const e = document.getElementById(key)
       if (e) {
         e.value = options[key]
+        if (e.classList.contains('array')) {
+          e.value = options[key].join(',')
+        } else if (e.classList.contains('narray')) {
+          e.value = options[key].map((e) => (e == null ? 'n' : e)).join(',')
+        }
         if (e.type == 'checkbox' && e.classList.contains('bool')) {
           e.checked = options[key]
         }
@@ -357,4 +377,8 @@ function loadOptionsFromStorage(name) {
   } else {
     return loadOptionsFromDom()
   }
+}
+
+function clone(tree) {
+  return JSON.parse(JSON.stringify(tree))
 }

@@ -101,7 +101,13 @@ public void remove(int index) {
       <span>待删除索引&nbsp;</span><input type="text" id='removeIndex' style="width:20px;" class="saveable" value="2">
       <input style='font-size:12px;' type="button" value="remove()" onclick="onRemove()">
     </div>
-    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable">
+  </div>
+  <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
+    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable int"
+      style="width: 40px;">
+    <span>矩形宽</span><input type="number" step="1" value="30" id="RECT_WIDTH" class="saveable int" style="width: 40px;">
+    <span>矩形高</span><input type="number" step="1" value="20" id="RECT_HEIGHT" class="saveable int" style="width: 40px;">
+    <span>next宽</span><input type="number" step="1" value="10" id="NEXT_WIDTH" class="saveable int" style="width: 40px;">
     <input style='font-size:12px;' type="button" value="保存" onclick="onSave('ds_singly_linked_list')">
   </div>
   <script src="js/p5.js"></script>
@@ -192,7 +198,7 @@ public void remove(int index) {
       remove(index) {
         if (index === 0) {
           if (this.head != null) {
-            d.add({ data: this, highlights: [index, index+1] }, frame) // 找到帧
+            d.add({ data: this, highlights: [index, index + 1] }, frame) // 找到帧
             const curr = this.head
             this.head = this.head.next
             d.add({ data: this, highlights: [index - 1, index], node: [curr.value, -1, 0, index] }, frame)
@@ -205,7 +211,7 @@ public void remove(int index) {
         const prev = this.findNode(index - 1)
         if (prev != null) {
           const curr = prev.next
-          d.add({ data: this, highlights: [index - 1, index, index+1] }, frame) // 找到帧
+          d.add({ data: this, highlights: [index - 1, index, index + 1] }, frame) // 找到帧
           if (curr != null) {
             prev.next = curr.next
             d.add({ data: this, highlights: [index - 1, index], node: [curr.value, index - 1, prev.next ? index : null, index] }, frame)
@@ -247,17 +253,12 @@ public void remove(int index) {
     }
 
     const options = loadOptionsFromStorage('ds_singly_linked_list')
-    const RECT_WIDTH = 30                 // 矩形宽度、圆直径
-    const RECT_HEIGHT = 20                // 值矩形高度
-    const SPACING = 1                     // 间隙
-    const INDEX_RECT_HEIGHT = 20          // 索引矩形高度
-    const POINTER_HEIGHT = 150            // 指针高度, 从底部算
-    const NEXT_WIDTH = 10                 // next 宽度
     const d = new Draw(options.animate_speed)
+    const RECT_WIDTH = options.RECT_WIDTH
+    const RECT_HEIGHT = options.RECT_HEIGHT
+    const NEXT_WIDTH = options.NEXT_WIDTH
     const list = new LinkedNode()
-    function preload() {
-      // const font = loadFont('JetBrainsMono-Regular.ttf')
-    }
+
     function setup() {
       const WIN_WIDTH = document.querySelector('main').clientWidth
       const WIN_HEIGHT = document.querySelector('main').clientHeight
@@ -269,7 +270,7 @@ public void remove(int index) {
       d.updateFrameButtons()
     }
     function draw() {
-      d.draw(() => background('#2d2d2d'))
+      d.draw(() => background('#eee'))
     }
     /*
       node: 新增节点
@@ -280,21 +281,21 @@ public void remove(int index) {
         pre.setAttribute('data-line', lineNumber)
         Prism.highlightAllUnder(pre)
       }
-      const UNIT = SPACING + RECT_WIDTH + NEXT_WIDTH + RECT_WIDTH
+      const UNIT = RECT_WIDTH + NEXT_WIDTH + RECT_WIDTH
       const BASE = UNIT / 2
-      const LEFT = UNIT / 2 + SPACING
+      const LEFT = UNIT / 2
 
       const [nValue, nPrev, nNext, nIndex] = [...node]
-      const N_HEIGHT = height - SPACING - 80
+      const N_HEIGHT = height - 80
 
       // head
       noStroke()
       fill('#dd7777')
-      rect(SPACING, height - SPACING, NEXT_WIDTH, -RECT_HEIGHT)
+      rect(0, height, NEXT_WIDTH, -RECT_HEIGHT)
       if (nPrev !== -1) {
-        arrow2(SPACING + NEXT_WIDTH, height - SPACING - RECT_HEIGHT / 2, RECT_WIDTH - 6, 0, 'white')
+        arrow2(NEXT_WIDTH, height - RECT_HEIGHT / 2, RECT_WIDTH - 6, 0, 'black')
       } else {
-        arrow1(NEXT_WIDTH / 2, height - RECT_HEIGHT, BASE + nIndex * UNIT - RECT_WIDTH / 2, N_HEIGHT, 'white')
+        arrow1(NEXT_WIDTH / 2, height - RECT_HEIGHT, BASE + nIndex * UNIT - RECT_WIDTH / 2, N_HEIGHT, 'black')
       }
 
 
@@ -302,21 +303,21 @@ public void remove(int index) {
       let idx = -1
       if (nIndex >= 0) {
         drawRect(BASE + nIndex * UNIT - RECT_WIDTH, N_HEIGHT, nValue, true)
-        if(nNext == null) {
-          arrow2(BASE + nIndex * UNIT + NEXT_WIDTH, N_HEIGHT - RECT_HEIGHT / 2, RECT_WIDTH, 0, 'white')
+        if (nNext == null) {
+          arrow2(BASE + nIndex * UNIT + NEXT_WIDTH, N_HEIGHT - RECT_HEIGHT / 2, RECT_WIDTH, 0, 'black')
         }
       }
       for (let curr = data.head; curr != null; curr = curr.next, i++, idx++) {
         let x = LEFT + i * UNIT
-        let y = height - SPACING
+        let y = height
 
         if (nNext === idx + 1) {
-          arrow1(BASE + nIndex * UNIT + NEXT_WIDTH / 2, N_HEIGHT, x + RECT_WIDTH / 2, y - RECT_HEIGHT, 'white')
+          arrow1(BASE + nIndex * UNIT + NEXT_WIDTH / 2, N_HEIGHT, x + RECT_WIDTH / 2, y - RECT_HEIGHT, 'black')
         }
         if (nPrev === idx + 1) {
-          arrow1(x + RECT_WIDTH + NEXT_WIDTH / 2, y - RECT_HEIGHT, BASE + nIndex * UNIT - RECT_WIDTH / 2, N_HEIGHT, 'white')
+          arrow1(x + RECT_WIDTH + NEXT_WIDTH / 2, y - RECT_HEIGHT, BASE + nIndex * UNIT - RECT_WIDTH / 2, N_HEIGHT, 'black')
         } else {
-          arrow2(x + RECT_WIDTH + NEXT_WIDTH, y - RECT_HEIGHT / 2, RECT_WIDTH, 0, 'white')
+          arrow2(x + RECT_WIDTH + NEXT_WIDTH, y - RECT_HEIGHT / 2, RECT_WIDTH, 0, 'black')
         }
 
         drawRect(x, y, curr.value, highlights.includes(idx + 1))

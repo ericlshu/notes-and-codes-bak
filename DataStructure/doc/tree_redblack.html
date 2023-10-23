@@ -37,7 +37,7 @@
     main {
       border-top: 2px solid #ccc;
       width: 100%;
-      height: 70%;
+      height: 50%;
       min-height: 200px;
     }
 
@@ -67,25 +67,12 @@
     <div style='background-color:#ccc; margin: 2px 2px 0 0; padding: 4px 6px;'>平衡</div>
   </section>
   <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
-    <span>数组表示的二叉树&nbsp;</span><input type="text" id='data' class="saveable" value="4,2,6,1,3,5,7">
+    <span>数组表示的二叉树&nbsp;</span><input type="text" id='data' class="saveable array" value="4,2,6,1,3,5,7">
     <span>n&nbsp;</span><input type="text" id='n' class="saveable" value="5">
-    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable">
-    <input style='font-size:12px;' type="button" value="保存" onclick="onSave('tree_redblack')">
     <input style='font-size:12px;' type="button" value="判断1" onclick="i4()">
     <input style='font-size:12px;' type="button" value="判断2" onclick="i2()">
     <input style='font-size:12px;' type="button" value="判断3" onclick="i1()">
     <input style='font-size:12px;' type="button" value="判断4" onclick="i3()">
-  </div>
-  <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
-    <span>待插入 key</span><input type="text" id='inserted' class="saveable" value="9">
-    <input style='font-size:12px;' type="button" value="put" onclick="doPut()">
-    <input style='font-size:12px;' type="button" value="c1" onclick="e1()">
-    <input style='font-size:12px;' type="button" value="c2" onclick="e2()">
-    <input style='font-size:12px;' type="button" value="c3_1" onclick="e3_1()">
-    <input style='font-size:12px;' type="button" value="c3_2" onclick="e3_2()">
-    <input style='font-size:12px;' type="button" value="c4 LL" onclick="e4()">
-    <input style='font-size:12px;' type="button" value="c4 LR" onclick="e5()">
-    <input style='font-size:12px;' type="button" value="c3 & c4 LL" onclick="e6()">
   </div>
   <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
     <span>待删除 key</span><input type="text" id='deleted' class="saveable" value="4">
@@ -111,6 +98,25 @@
     <input style='font-size:12px;' type="button" value="c0 & c4" onclick="d6_3()">
     <input style='font-size:12px;' type="button" value="c4 & c5" onclick="d7()">
     <input style='font-size:12px;' type="button" value="??" onclick="d8()">
+  </div>
+  <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
+    <span>待插入 key</span><input type="text" id='inserted' class="saveable" value="9">
+    <input style='font-size:12px;' type="button" value="put" onclick="doPut()">
+    <input style='font-size:12px;' type="button" value="c1" onclick="e1()">
+    <input style='font-size:12px;' type="button" value="c2" onclick="e2()">
+    <input style='font-size:12px;' type="button" value="c3_1" onclick="e3_1()">
+    <input style='font-size:12px;' type="button" value="c3_2" onclick="e3_2()">
+    <input style='font-size:12px;' type="button" value="c4 LL" onclick="e4()">
+    <input style='font-size:12px;' type="button" value="c4 LR" onclick="e5()">
+    <input style='font-size:12px;' type="button" value="c3 & c4 LL" onclick="e6()">
+    <input style='font-size:12px;' type="button" value="c4 RL" onclick="e7()">
+    <input style='font-size:12px;' type="button" value="c4 RR" onclick="e8()">
+  </div>
+  <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
+    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable int"
+      style="width: 40px;">
+    <span>直径</span><input type="number" step="1" value="25" id="DIAMETER" class="saveable int" style="width: 40px;">
+    <input style='font-size:12px;' type="button" value="保存" onclick="onSave('tree_redblack')">
   </div>
   <script src="js/p5.js"></script>
   <script src="js/p5-svg.js"></script>
@@ -409,10 +415,10 @@
       tree.root = new Node(9, 'black',
         new Node(5, 'red',
           new Node(3, 'black', new Node(2, 'red'), new Node(4, 'red')),
-          new Node(7, 'black', new Node(6, 'red'), new Node(8, 'red'))
+          new Node(7, 'black')
         ), new Node(13, 'red',
-          new Node(11, 'black', new Node(10, 'red'), new Node(12, 'red')),
-          new Node(15, 'black', new Node(14, 'red'), new Node(16, 'red'))
+          new Node(11, 'black'),
+          new Node(15, 'black')
         ))
       all.pop()
       all.push(tree.root)
@@ -468,17 +474,36 @@
       document.getElementById("inserted").value = '1'
       d.updateFrameButtons()
     }
-    const colorMap = new Map()
-    const colorArray = ['#1abc9c', '#e67e22', '#3498db', '#f1c40f', '#9b59b6', '#e74c3c']
-    let colorIndex = 0
+    function e7() {
+      tree.root = null
+      all.pop()
+      const str = '8,5,10,7'
+      document.getElementById("data").value = str
+      const data = str.split(',').map(e => Number(e))
+      for (let n of data) {
+        tree.put(n)
+      }
+      document.getElementById("inserted").value = '6'
+      d.updateFrameButtons()
+    }
+    function e8() {
+      tree.root = null
+      all.pop()
+      const str = '8,5,10,6'
+      document.getElementById("data").value = str
+      const data = str.split(',').map(e => Number(e))
+      for (let n of data) {
+        tree.put(n)
+      }
+      document.getElementById("inserted").value = '7'
+      d.updateFrameButtons()
+    }
     const options = loadOptionsFromStorage('tree_redblack')
-    let data = options.data.split(',').map(e => Number(e))
-    const DIAMETER = 25                   // 直径 diameter
+    let data = options.data
+    const DIAMETER = options.DIAMETER
     const n = options.n
     const d = new Draw(options.animate_speed)
-    function preload() {
-      // const font = loadFont('JetBrainsMono-Regular.ttf')
-    }
+
     function setup() {
       const WIN_WIDTH = document.querySelector('main').clientWidth
       const WIN_HEIGHT = document.querySelector('main').clientHeight
@@ -486,12 +511,10 @@
       createCanvas(WIN_WIDTH, WIN_HEIGHT, SVG)
       textSize(FONT_SIZE)
       textAlign(CENTER)
-      noStroke()
       d.add({ cloned: clone(all) }, frame)
       d.updateFrameButtons()
     }
     function draw() {
-      // d.draw(() => background('#2d2d2d'))
       d.draw(() => background('#eee'))
     }
     function frame({ cloned }) {
@@ -506,15 +529,14 @@
       if (node) {
         if (node.key) {
           if (px && py) {
-            stroke('black')
+            stroke(0)
             line(x, y, px, py)
-            noStroke()
           }
         }
         drawTree(node.left, x - Math.pow(2, deep) * DIAMETER / 4, y + Math.pow(2, n - deep) * DIAMETER / 5, deep - 1, x, y)
         drawTree(node.right, x + Math.pow(2, deep) * DIAMETER / 4, y + Math.pow(2, n - deep) * DIAMETER / 5, deep - 1, x, y)
         if (node.key) {
-
+          stroke(0)
           fill(node.color)
           circle(x, y, DIAMETER + 8)
           let color = "#ccc"
@@ -526,6 +548,7 @@
           circle(x, y, DIAMETER)
           fill('black')
           // text(`${node.key}_${subs[node.height]}`, x, y + 4)
+          noStroke()
           text(`${node.key}`, x, y + 4)
         }
       }
@@ -651,7 +674,7 @@
         if (!sibling) {
           this.fixDoubleBlack(parent)
         } else {
-          if (isRed(sibling)) {            
+          if (isRed(sibling)) {
             if (sibling.isLeftChild()) {
               this.rightRotate(parent)
             } else {
@@ -664,25 +687,25 @@
             this.fixDoubleBlack(x)
           } else {
             if (isRed(sibling.left) || isRed(sibling.right)) {
-              if (sibling.isLeftChild() && isRed(sibling.left)) {   
-                this.rightRotate(parent)             
+              if (sibling.isLeftChild() && isRed(sibling.left)) {
+                this.rightRotate(parent)
                 setBlack(sibling.left)
                 d.add({ cloned: clone(all) }, frame)
                 sibling.color = parent.color
-                d.add({ cloned: clone(all) }, frame)                
-              } else if (sibling.isLeftChild() && isRed(sibling.right)) {        
-                const redChild = sibling.right        
+                d.add({ cloned: clone(all) }, frame)
+              } else if (sibling.isLeftChild() && isRed(sibling.right)) {
+                const redChild = sibling.right
                 this.leftRotate(sibling)
                 this.rightRotate(parent)
                 redChild.color = parent.color
                 d.add({ cloned: clone(all) }, frame)
-              } else if (!sibling.isLeftChild() && isRed(sibling.left)) {     
-                const redChild = sibling.left                  
+              } else if (!sibling.isLeftChild() && isRed(sibling.left)) {
+                const redChild = sibling.left
                 this.rightRotate(sibling)
                 this.leftRotate(parent)
                 redChild.color = parent.color
                 d.add({ cloned: clone(all) }, frame)
-              } else {                
+              } else {
                 this.leftRotate(parent)
                 setBlack(sibling.right)
                 d.add({ cloned: clone(all) }, frame)
@@ -725,7 +748,7 @@
               parent.left = null
             } else {
               parent.right = null
-            }            
+            }
           }
           this.updateHeights(this.root)
           d.add({ cloned: clone(all) }, frame)
@@ -766,146 +789,7 @@
         d.add({ cloned: clone(all) }, frame)
         this.doRemove(replaced)
       }
-      // remove(key) {
-      //   let p = this.root
-      //   while (p) {
-      //     if (key < p.key) {
-      //       p = p.left
-      //     } else if (p.key < key) {
-      //       p = p.right
-      //     } else {
-      //       break
-      //     }
-      //   }
-      //   if (!p) {
-      //     return
-      //   }
-      //   p.status |= 8
-      //   if (p.left && p.right) {
-      //     let s = p.right
-      //     while (s.left) {
-      //       s = s.left
-      //     }
-      //     p.key = s.key
-      //     p = s
-      //   }
-      //   const replaced = p.left ? p.left : p.right
-      //   // 有删剩下的
-      //   if (replaced) {
-      //     replaced.parent = p.parent
-      //     if (!p.parent) { // console.log('case 1_2')
-      //       this.root = replaced
-      //       all.pop()
-      //       all.push(this.root)
-      //     } else if (p == p.parent.left) {
-      //       p.parent.left = replaced
-      //     } else {
-      //       p.parent.right = replaced
-      //     }
-      //     if (p.color === 'black') {
-      //       this.updateHeights(this.root)
-      //       d.add({ cloned: clone(all) }, frame)
-      //       this.fixDoubleBlack(replaced)
-      //     }
-      //   }
-      //   // 没有删剩下的(剩下null) 且父为null
-      //   else if (!p.parent) { // console.log('case 1_1')
-      //     this.root = null
-      //     all.pop()
-      //     all.push(this.root)
-      //   }
-      //   // 删的是叶子节点(剩下null)
-      //   else {
-      //     if (p.color === 'black') {
-      //       this.updateHeights(this.root)
-      //       d.add({ cloned: clone(all) }, frame)
-      //       this.fixDoubleBlack(p)
-      //     }
-      //     if (p == p.parent.left) {
-      //       p.parent.left = null
-      //     } else {
-      //       p.parent.right = null
-      //     }
-      //     p.parent = null
-      //   }
-      //   this.updateHeights(this.root)
-      //   d.add({ cloned: clone(all) }, frame)
-      // }
-      // fixDoubleBlack(x) { // x 是删剩下节点, 没有剩下的就是被删除节点
-      //   while (x != this.root && x.color === 'black') {
-      //     let sibling
-      //     if (x === x.parent.left) {
-      //       sibling = x.parent.right
-      //       if (sibling.color === 'red') { // case 2 兄弟是红
-      //         setBlack(sibling)
-      //         setRed(x.parent)
-      //         this.updateHeights(this.root)
-      //         d.add({ cloned: clone(all) }, frame)
-      //         this.leftRotate(x.parent)
-      //         sibling = x.parent.right
-      //       }
-      //       // case 3 兄弟是黑, 兄弟的两个孩子都是黑
-      //       if ((!sibling.left || sibling.left.color == 'black') && (!sibling.right || sibling.right.color == 'black')) {
-      //         setRed(sibling)
-      //         x = x.parent
-      //         this.updateHeights(this.root)
-      //         d.add({ cloned: clone(all) }, frame)
-      //       } else {
-      //         // case 5 兄弟是黑, 兄弟的右孩子是黑
-      //         if (!sibling.right || sibling.right.color == 'black') {
-      //           setBlack(sibling.left)
-      //           setRed(sibling)
-      //           this.rightRotate(sibling)
-      //           sibling = x.parent.right
-      //         }
-      //         if (x.parent.color == 'red') { // case 4 父亲是红
-      //           setRed(sibling)
-      //         } else {
-      //           setBlack(sibling)
-      //         }
-      //         setBlack(x.parent)
-      //         setBlack(sibling.right)
-      //         this.leftRotate(x.parent)
-      //         x = this.root
-      //       }
-      //     }
-      //     else {
-      //       sibling = x.parent.left
-      //       if (sibling.color === 'red') {
-      //         setBlack(sibling)
-      //         setRed(x.parent)
-      //         this.rightRotate(x.parent)
-      //         sibling = x.parent.left
-      //       }
-      //       if ((!sibling.left || sibling.left.color == 'black') && (!sibling.right || sibling.right.color == 'black')) {
-      //         setRed(sibling)
-      //         x = x.parent
-      //       } else {
-      //         if (!sibling.left || sibling.left.color == 'black') {
-      //           setBlack(sibling.right)
-      //           setRed(sibling)
-      //           this.leftRotate(sibling)
-      //           sibling = x.parent.left
-      //         }
-      //         if (x.parent.color == 'red') {
-      //           setRed(sibling)
-      //         } else {
-      //           setBlack(sibling)
-      //         }
-      //         setBlack(x.parent)
-      //         setBlack(sibling.left)
-      //         this.rightRotate(x.parent)
-      //         x = this.root
-      //       }
-      //     }
-      //   }
-      //   const old = x.color
-      //   setBlack(x)
-      //   if (old === 'red') {
-      //     this.updateHeights(this.root)
-      //     d.add({ cloned: clone(all) }, frame)
-      //   }
-      // }
+
       put(key) {
         let node = this.root
         let parent = null
@@ -948,17 +832,15 @@
               setBlack(uncle)
               d.add({ cloned: clone(all) }, frame)
               setRED(grandparent)
-              this.updateHeights(this.root)
               d.add({ cloned: clone(all) }, frame)
             } else {
               if (x == parent.right) {
                 x = parent
                 this.leftRotate(parent)
-              }              
+              }
               setBlack(x.parent)
               d.add({ cloned: clone(all) }, frame)
               setRED(x.parent.parent)
-              this.updateHeights(this.root)
               d.add({ cloned: clone(all) }, frame)
               this.rightRotate(x.parent.parent)
             }
@@ -967,18 +849,19 @@
             if (uncle && uncle.color === 'red') {
               x = grandparent
               setBlack(parent)
+              d.add({ cloned: clone(all) }, frame)
               setBlack(uncle)
+              d.add({ cloned: clone(all) }, frame)
               setRED(grandparent)
-              this.updateHeights(this.root)
               d.add({ cloned: clone(all) }, frame)
             } else {
               if (x == parent.left) {
                 x = parent
                 this.rightRotate(x)
               }
-              setRED(x.parent.parent)
               setBlack(x.parent)
-              this.updateHeights(this.root)
+              d.add({ cloned: clone(all) }, frame)
+              setRED(x.parent.parent)
               d.add({ cloned: clone(all) }, frame)
               this.leftRotate(x.parent.parent)
             }

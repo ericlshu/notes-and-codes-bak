@@ -100,7 +100,7 @@ public class E01Leetcode206 {
         ListNode o2 = new ListNode(2, o3);
         ListNode o1 = new ListNode(1, o2);
         System.out.println(o1);
-        ListNode n1 = new E01Leetcode206().reverseList(o1);
+        ListNode n1 = new E01Leetcode206().reverseList1(o1);
         System.out.println(n1);
     }
 

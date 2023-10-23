@@ -60,11 +60,15 @@
     <div style='background-color:#ccc; margin: 2px 2px 0 0; padding: 4px 6px;'>未访问</div>
   </section>
   <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
-    <span>数组表示的二叉树&nbsp;</span><input type="text" id='data' class="saveable" value="1,2,3,4,5,n,n,n,n,7,8">
+    <span>数组表示的二叉树&nbsp;</span><input type="text" id='data' class="saveable narray" value="1,2,3,4,5,n,n,n,n,7,8">
     <span>n&nbsp;</span><input type="text" id='n' class="saveable" value="5">
-    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable">
-    <input style='font-size:12px;' type="button" value="保存" onclick="onSave('leetcode_226')">
     <input style='font-size:12px;' type="button" value="翻转" onclick="invertTree()">
+  </div>
+  <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
+    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable int"
+      style="width: 40px;">
+    <span>直径</span><input type="number" step="1" value="30" id="DIAMETER" class="saveable int" style="width: 40px;">
+    <input style='font-size:12px;' type="button" value="保存" onclick="onSave('leetcode_226')">
   </div>
   <script src="js/p5.js"></script>
   <script src="js/p5-svg.js"></script>
@@ -99,24 +103,13 @@
       rec(root, node.left)
       rec(root, node.right)
     }
-    const colorMap = new Map()
-    const colorArray = ['#1abc9c', '#e67e22', '#3498db', '#f1c40f', '#9b59b6', '#e74c3c']
-    let colorIndex = 0
+
     const options = loadOptionsFromStorage('leetcode_226')
-    let data = options.data.split(',').map(e => {
-      if (e === 'null' || e === 'n') {
-        return null
-      } else {
-        return e;
-      }
-    })
-    const DIAMETER = 30                   // 直径 diameter
+    const data = options.data
+    const DIAMETER = options.DIAMETER
     const n = options.n
     const d = new Draw(options.animate_speed)
     let root
-    function preload() {
-      // const font = loadFont('JetBrainsMono-Regular.ttf')
-    }
     function setup() {
       const WIN_WIDTH = document.querySelector('main').clientWidth
       const WIN_HEIGHT = document.querySelector('main').clientHeight
@@ -124,12 +117,11 @@
       createCanvas(WIN_WIDTH, WIN_HEIGHT, SVG)
       textSize(FONT_SIZE)
       textAlign(CENTER)
-      noStroke()
       root = binary_tree(data, n)
       d.updateFrameButtons()
     }
     function draw() {
-      d.draw(() => background('#2d2d2d'))
+      d.draw(() => background('#eee'))
     }
     function frame({ cloned, highlights }) {
       drawTree(cloned, width / 2, DIAMETER, n - 1, 0, 0, highlights)
@@ -139,7 +131,7 @@
       if (node) {
         if (node.txt) {
           if (px && py) {
-            stroke('white')
+            stroke('black')
             line(x, y, px, py)
             noStroke()
           }
@@ -159,7 +151,6 @@
         }
       }
     }
-
 
     /*
       status
@@ -189,10 +180,6 @@
       const root = newArray[0]
       d.add({ cloned: clone(root) }, frame)
       return root
-    }
-
-    function clone(tree) {
-      return JSON.parse(JSON.stringify(tree))
     }
 
   </script>

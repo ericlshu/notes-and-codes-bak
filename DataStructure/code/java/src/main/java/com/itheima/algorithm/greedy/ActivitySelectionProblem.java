@@ -122,19 +122,4 @@ public class ActivitySelectionProblem {
         }
     }
 
-    // 下面代码为 Leetcode 435 题解
-    public int eraseOverlapIntervals(int[][] intervals) {
-        Arrays.sort(intervals, Comparator.comparingInt(a -> a[1]));
-        int i, j;
-        i = 0;
-        int count = 1;
-        for (j = 1; j < intervals.length; j++) {
-            if (intervals[j][0] >= intervals[i][1]) {
-                i = j;
-                count++;
-            }
-        }
-        return intervals.length - count;
-    }
-
 }

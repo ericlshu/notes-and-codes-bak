@@ -69,7 +69,7 @@
   </section>
   <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
     <div style="margin-bottom: 2px;">
-      <span>初始队列&nbsp;</span><input type="text" id='initQueue' class="saveable" value="100,19,36,17,3,25,1,2,7">
+      <span>初始队列&nbsp;</span><input type="text" id='initQueue' class="saveable array" value="100,19,36,17,3,25,1,2,7">
     </div>
     <div style="margin-bottom: 2px;">
       <span>入队&nbsp;</span><input type="text" id='offered' class="saveable" value="4">
@@ -78,8 +78,12 @@
     <div style="margin-bottom: 2px;">
       <span>出队&nbsp;</span><input style='font-size:12px;' type="button" value="poll()" onclick="poll()">
     </div>
-    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable">
-    <input style='font-size:12px;' type="button" value="保存" onclick="onSave('priority_quque_3')">
+  </div>
+  <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
+    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable int"
+      style="width: 40px;">
+    <span>直径</span><input type="number" step="1" value="30" id="DIAMETER" class="saveable int" style="width: 40px;">
+    <input style='font-size:12px;' type="button" value="保存" onclick="onSave('priority_queue_3')">
   </div>
   <script src="js/p5.js"></script>
   <script src="js/p5-svg.js"></script>
@@ -143,21 +147,15 @@
       d.add({ array: dataArray }, frame)
       d.updateFrameButtons()
     }
-    const options = loadOptionsFromStorage('priority_quque_3')
-    const DIAMETER = 30                   // 直径
-    const RECT_HEIGHT = 30                // 值矩形高度
-    const SPACING = 1                     // 间隙
-    const INDEX_RECT_HEIGHT = 20          // 索引矩形高度
-    const POINTER_HEIGHT = 150            // 指针高度, 从底部算
+    const options = loadOptionsFromStorage('priority_queue_3')
+    const DIAMETER = options.DIAMETER
     const d = new Draw(options.animate_speed)
     const NODE_LEFT_PAD = 250
     const LEFT_PAD = 20
     const TOP_PAD = 40
 
-    let dataArray = options.initQueue.split(',').map(e => Number(e))
-    function preload() {
-      // const font = loadFont('JetBrainsMono-Regular.ttf')
-    }
+    let dataArray = options.initQueue
+
     function setup() {
       const WIN_WIDTH = document.querySelector('main').clientWidth
       const WIN_HEIGHT = document.querySelector('main').clientHeight
@@ -169,7 +167,7 @@
       d.updateFrameButtons()
     }
     function draw() {
-      d.draw(() => background('#2d2d2d'))
+      d.draw(() => background('#eee'))
     }
 
     class Node {
@@ -250,20 +248,22 @@
 
       let x = LEFT_PAD, y = TOP_PAD - DIAMETER / 2
       for (let i = 0; i < array.length; i++) {
-        stroke(255)
-        pointers.draw2(i, y, x + 400 - DIAMETER)
-        noStroke()
+        stroke(0)
+        pointers.draw2(i, y, x + 400 - DIAMETER)        
         highlights.includes(i) ? fill('#f08d49') : fill('#67cdcc')
         rect(x + DIAMETER, y, DIAMETER, DIAMETER)
         fill('#ffffff')
+        noStroke()
         text(array[i], x + DIAMETER + DIAMETER / 2, y + DIAMETER / 2 + 4)
 
+        stroke(0)
         fill('#cc99cd')
         rect(x, y, DIAMETER, DIAMETER)
         fill('#ffffff')
+        noStroke()
         text(i, x + DIAMETER / 2, y + DIAMETER / 2 + 4)
 
-        stroke(255)
+        stroke(0)
         line(x, y, x + 400, y)
         y += DIAMETER
       }

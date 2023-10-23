@@ -60,55 +60,29 @@
     <div style='background-color:#ccc; margin: 2px 2px 0 0; padding: 4px 6px;'>未访问</div>
   </section>
   <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
-    <span>数组表示的二叉树&nbsp;</span><input type="text" id='data' class="saveable" value="1,2,2,3,4,4,3,5,null,null,null,null,null,null,5">
+    <span>数组表示的二叉树&nbsp;</span><input type="text" id='data' class="saveable narray" value="1,2,2,3,4,4,3,5,n,n,n,n,n,n,5">
     <span>n&nbsp;</span><input type="text" id='n' class="saveable" value="5">
-    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable">
-    <input style='font-size:12px;' type="button" value="保存" onclick="onSave('leetcode_101')">
     <input style='font-size:12px;' type="button" value="检查对称" onclick="isSymmetric()">
+  </div>
+  <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
+    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable int"
+      style="width: 40px;">
+    <span>直径</span><input type="number" step="1" value="30" id="DIAMETER" class="saveable int" style="width: 40px;">
+    <input style='font-size:12px;' type="button" value="保存" onclick="onSave('leetcode_101')">
   </div>
   <script src="js/p5.js"></script>
   <script src="js/p5-svg.js"></script>
   <script src="js/util.js"></script>
   <script src="js/prism.js"></script>
   <script>
-    const result = []
-    function isSymmetric() {
-      root = binary_tree(data, n)
-      check(root, root.left, root.right)
-      d.updateFrameButtons()
-    }
-    function check(root, a, b) {
-      if (a == null && b == null) {
-        return true
-      }
-      if (a == null || a == null) {
-        return false
-      }
-      const highlights = [a.id, b.id]
-      d.add({ cloned: clone(root), highlights }, frame)
-      if (a.txt != b.txt) {
-        return false
-      }
-      return check(root, a.left, b.right) && check(root, a.right, b.left)
-    }
-    const colorMap = new Map()
-    const colorArray = ['#1abc9c', '#e67e22', '#3498db', '#f1c40f', '#9b59b6', '#e74c3c']
-    let colorIndex = 0
+    
     const options = loadOptionsFromStorage('leetcode_101')
-    let data = options.data.split(',').map(e => {
-      if (e === 'null' || e === 'n') {
-        return null
-      } else {
-        return e;
-      }
-    })
-    const DIAMETER = 30                   // 直径 diameter
+    let data = options.data
+    const DIAMETER = options.DIAMETER
     const n = options.n
     const d = new Draw(options.animate_speed)
     let root
-    function preload() {
-      // const font = loadFont('JetBrainsMono-Regular.ttf')
-    }
+
     function setup() {
       const WIN_WIDTH = document.querySelector('main').clientWidth
       const WIN_HEIGHT = document.querySelector('main').clientHeight
@@ -121,7 +95,7 @@
       d.updateFrameButtons()
     }
     function draw() {
-      d.draw(() => background('#2d2d2d'))
+      d.draw(() => background('#eee'))
     }
     function frame({ cloned, highlights }) {
       drawTree(cloned, width / 2, DIAMETER, n - 1, 0, 0, highlights)
@@ -131,7 +105,7 @@
       if (node) {
         if (node.txt) {
           if (px && py) {
-            stroke('white')
+            stroke('black')
             line(x, y, px, py)
             noStroke()
           }
@@ -152,6 +126,26 @@
       }
     }
 
+    const result = []
+    function isSymmetric() {
+      root = binary_tree(data, n)
+      check(root, root.left, root.right)
+      d.updateFrameButtons()
+    }
+    function check(root, a, b) {
+      if (a == null && b == null) {
+        return true
+      }
+      if (a == null || a == null) {
+        return false
+      }
+      const highlights = [a.id, b.id]
+      d.add({ cloned: clone(root), highlights }, frame)
+      if (a.txt != b.txt) {
+        return false
+      }
+      return check(root, a.left, b.right) && check(root, a.right, b.left)
+    }
 
     /*
       status
@@ -181,10 +175,6 @@
       const root = newArray[0]
       d.add({ cloned: clone(root) }, frame)
       return root
-    }
-
-    function clone(tree) {
-      return JSON.parse(JSON.stringify(tree))
     }
 
   </script>

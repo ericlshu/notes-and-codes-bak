@@ -60,8 +60,12 @@
     <div style='background-color:#7df4f2; margin: 2px 2px 0 0; padding: 4px 6px;'>已结束</div>
   </section>
   <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
-    <span>n&nbsp;</span><input type="text" id='n' class="saveable" value="5">
-    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable">
+    <span>n&nbsp;</span><input type="text" id='n' class="saveable" value="6">
+  </div>
+  <div style='margin: 2px 2px 0 0; padding: 4px 6px;'>
+    <span>动画速度(ms)&nbsp;</span><input type="number" step="100" value="300" id="animate_speed" class="saveable int"
+      style="width: 40px;">
+    <span>矩形高</span><input type="number" step="1" value="30" id="RECT_HEIGHT" class="saveable int" style="width: 40px;">
     <input style='font-size:12px;' type="button" value="保存" onclick="onSave('recursion_merge')">
   </div>
   <script src="js/p5.js"></script>
@@ -69,26 +73,17 @@
   <script src="js/util.js"></script>
   <script src="js/prism.js"></script>
   <script>
-    const colorMap = new Map()
-    const colorArray = ['#1abc9c', '#e67e22', '#3498db', '#f1c40f', '#9b59b6', '#e74c3c']
-    let colorIndex = 0
     const options = loadOptionsFromStorage('recursion_merge')
-    const DIAMETER = 25                   // 直径 diameter
-    const WIDTH_ARRAY = [15, 15, 25, 80, 120, 150, 180]
-    const HEIGHT_ARRAY = [80, 60, 40, 20, 20, 20, 20]
-    const RECT_WIDTH = 30                 // 矩形宽度、圆直径
+    const WIDTH_ARRAY = [15, 30, 45, 80, 120, 150, 180]
+    const HEIGHT_ARRAY = [80, 60, 60, 50, 50, 50, 50]
     const RECT_HEIGHT = 20                // 值矩形高度
-    const SPACING = 1                     // 间隙
-    const INDEX_RECT_HEIGHT = 20          // 索引矩形高度
     const n = options.n
     const d = new Draw(options.animate_speed)
-    function preload() {
-      // const font = loadFont('JetBrainsMono-Regular.ttf')
-    }
+
     function setup() {
       const WIN_WIDTH = document.querySelector('main').clientWidth
       const WIN_HEIGHT = document.querySelector('main').clientHeight
-      const FONT_SIZE = 10
+      const FONT_SIZE = 16
       createCanvas(WIN_WIDTH, WIN_HEIGHT, SVG)
       textSize(FONT_SIZE)
       textAlign(CENTER)
@@ -97,10 +92,9 @@
       // const array = [[6], [1], [2], [5], [4], [3]]
       const f = merge(array, tree, 0, array.length - 1)
       d.updateFrameButtons()
-      noStroke()
     }
     function draw() {
-      d.draw(() => background('#2d2d2d'))
+      d.draw(() => background('#eee'))
     }
     function frame({ cloned }) {
       drawTree(cloned, width / 2, RECT_HEIGHT, n - 1, 0, 0)
@@ -110,7 +104,7 @@
       if (node) {
         if (node.txt) {
           if (px && py) {
-            stroke('white')
+            stroke('black')
             line(x, y, px, py)
             noStroke()
           }
@@ -123,10 +117,12 @@
           } else {
             fill('#00FF99')
           }
-          const w = node.txt.length * 4 + 8
+          const w = node.txt.length * 6 + 16
+          stroke(0)
           rect(x - w / 2, y - RECT_HEIGHT / 2, w, RECT_HEIGHT)
+          noStroke()
           fill('black')
-          text(node.txt, x, y + 3)
+          text(node.txt, x, y + 5)
         }
       }
     }
@@ -154,10 +150,6 @@
     }
     function merge2(l, r) {
       return l.concat(r).sort((a, b) => a - b)
-    }
-
-    function clone(tree) {
-      return JSON.parse(JSON.stringify(tree))
     }
 
   </script>

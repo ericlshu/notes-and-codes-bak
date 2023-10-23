@@ -39,13 +39,4 @@ public class ListNode {
         }
         return p;
     }
-
-    public ListNode append(ListNode last) {
-        ListNode p = this;
-        while (p.next != null) {
-            p = p.next;
-        }
-        p.next = last;
-        return this;
-    }
 }
